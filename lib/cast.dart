@@ -3,30 +3,23 @@ library framework;
 
 import 'package:js/js.dart';
 
-@JS('receiver')
-class Receiver {
-  @JS('CastReceiverManager')
-  external static CastReceiverManager get castReceiverManager;
-}
-
-@JS()
-class CastReceiverManager {
-  external CastReceiverManager getInstance();
+@JS('framework.CastReceiverContext')
+class CastReceiverContext {
+  external static CastReceiverContext getInstance();
   external set onReady(Function cb);
   external set onSenderConnected(Function cb);
   external set onSenderDisconnected(Function cb);
-  external CastMessageBus getCastMessageBus(String channel, String type);
-  external void start(Options f);
+  external void addCustomMessageListener(String channel, void Function(Event e) cb);
+  external void start(CastReceiverOptions f);
 }
 
-@JS()
-@anonymous
-class Options {
-  Options(this.statusText);
-  String statusText;
+@JS('framework.CastReceiverOptions')
+class CastReceiverOptions {
+  external set statusText(String s);
+  external set maxInactivity(int t);
 }
 
-@JS()
-class CastMessageBus {
-  external set onMessage(Function cb);
+@JS('framework.system.Event')
+class Event {
+  external dynamic get data;
 }

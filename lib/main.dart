@@ -5,34 +5,17 @@ import 'package:flutter_cast_web/cast.dart';
 import 'package:js/js.dart';
 
 void main() {
-  final manager =
-      Receiver
-      .castReceiverManager
-      .getInstance();
-  runApp(MyApp(manager));
-}
-
-class MyApp extends StatelessWidget {
-  final CastReceiverManager manager;
-
-  MyApp(this.manager);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(manager: manager),
-    );
-  }
+  runApp(
+    MaterialApp(
+      home: MyHomePage(manager: CastReceiverContext.getInstance()),
+    ),
+  );
 }
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.manager}) : super(key: key);
 
-  final CastReceiverManager manager;
+  final CastReceiverContext manager;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -40,7 +23,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String info = "This is a casted app";
-  CastMessageBus bus;
 
   @override
   void initState() {
@@ -59,29 +41,33 @@ class _MyHomePageState extends State<MyHomePage> {
           print(eventString);
           info = "Sender disconnected...\n$eventString";
         }));
-    bus = widget.manager.getCastMessageBus(
-        'urn:x-cast:com.schwusch.chromecast-example', 'JSON');
-    bus.onMessage = allowInterop((event) => setState(() {
-          final eventString = jsonEncode(event);
-          print(eventString);
-          info = "New event!\n$eventString";
-        }));
 
-    widget.manager.start(Options("Application is staharting"));
+    widget.manager.addCustomMessageListener(
+      'urn:x-cast:com.schwusch.chromecast-example',
+      (ev) {
+        final eventString = jsonEncode(ev.data);
+        print(eventString);
+        info = "Custom event:\n$eventString";
+      },
+    );
+
+    widget.manager.start(
+      CastReceiverOptions()
+        ..statusText = "Application is staharting"
+        ..maxInactivity = 3600, // for development only
+    );
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(info),
-          ],
+  Widget build(BuildContext context) => Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(info),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
