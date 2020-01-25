@@ -1,5 +1,5 @@
 @JS('cast')
-library framework;
+library cast;
 
 import 'package:js/js.dart';
 
@@ -28,4 +28,10 @@ class EventType {
 @JS('framework.system.Event')
 class Event {
   external dynamic get data;
+}
+
+@JS('debug.CastDebugLogger')
+class CastDebugLogger {
+  external static CastDebugLogger getInstance();
+  external void setEnabled(bool enabled);
 }

@@ -5,6 +5,7 @@ import 'package:flutter_cast_web/cast.dart';
 import 'package:js/js.dart';
 
 void main() {
+  CastDebugLogger.getInstance().setEnabled(true);
   runApp(
     MaterialApp(
       home: MyHomePage(manager: CastReceiverContext.getInstance()),
