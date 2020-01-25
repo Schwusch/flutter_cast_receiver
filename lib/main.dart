@@ -26,29 +26,38 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    widget.manager.onReady = allowInterop((event) => setState(() {
-          final eventString = jsonEncode(event);
-          print(eventString);
-          info = "Ready!\n$eventString";
-        }));
-    widget.manager.onSenderConnected = allowInterop((event) => setState(() {
-          final eventString = jsonEncode(event);
-          print(eventString);
-          info = "Sender connected!\n$eventString";
-        }));
-    widget.manager.onSenderDisconnected = allowInterop((event) => setState(() {
-          final eventString = jsonEncode(event);
-          print(eventString);
-          info = "Sender disconnected...\n$eventString";
-        }));
+    widget.manager.addEventListener(
+      EventType.READY,
+      allowInterop((event) => setState(() {
+            final eventString = jsonEncode(event);
+            print(eventString);
+            info = "Ready!\n$eventString";
+          })),
+    );
+    widget.manager.addEventListener(
+      EventType.SENDER_CONNECTED,
+      allowInterop((event) => setState(() {
+            final eventString = jsonEncode(event);
+            print(eventString);
+            info = "Sender connected!\n$eventString";
+          })),
+    );
+    widget.manager.addEventListener(
+      EventType.SENDER_DISCONNECTED,
+      allowInterop((event) => setState(() {
+            final eventString = jsonEncode(event);
+            print(eventString);
+            info = "Sender disconnected...\n$eventString";
+          })),
+    );
 
     widget.manager.addCustomMessageListener(
       'urn:x-cast:com.schwusch.chromecast-example',
-      (ev) {
+      allowInterop((ev) {
         final eventString = jsonEncode(ev.data);
         print(eventString);
         info = "Custom event:\n$eventString";
-      },
+      }),
     );
 
     widget.manager.start(
