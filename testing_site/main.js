@@ -93,7 +93,8 @@ function stopApp() {
 function connect() {
   console.log("connect()");
   sendMessage({
-    user: $("#url").val(),
+    phrase: $("#url").val(),
+    key: $("#refresh").val(),
   });
 }
 
@@ -106,11 +107,8 @@ $(function() {
   }
 
   var params = new URLSearchParams(window.location.search);
-  if (params.has("url")) {
-    $("#url").val(params.get("url"));
-  }
 
-  if (params.has("refresh")) {
-    $("#refresh").val(params.get("refresh"));
+  if (params.has("key")) {
+    $("#refresh").val(params.get("key"));
   }
 });

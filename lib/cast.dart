@@ -29,9 +29,3 @@ class EventType {
 class Event {
   external dynamic get data;
 }
-
-@JS('debug.CastDebugLogger')
-class CastDebugLogger {
-  external static CastDebugLogger getInstance();
-  external void setEnabled(bool enabled);
-}
