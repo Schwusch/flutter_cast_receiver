@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:js';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_cast_web/cast.dart';
@@ -23,14 +24,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String info = "This is a casted app";
+  String info = "This is a locally hosted cast app";
 
   @override
   void initState() {
     widget.manager.addEventListener(
       EventType.READY,
       allowInterop((event) => setState(() {
-            final eventString = jsonEncode(event);
+            final eventString = jsonEncode(toMap(event));
             print(eventString);
             info = "Ready!\n$eventString";
           })),
@@ -38,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
     widget.manager.addEventListener(
       EventType.SENDER_CONNECTED,
       allowInterop((event) => setState(() {
-            final eventString = jsonEncode(event);
+            final eventString = jsonEncode(toMap(event));
             print(eventString);
             info = "Sender connected!\n$eventString";
           })),
@@ -46,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
     widget.manager.addEventListener(
       EventType.SENDER_DISCONNECTED,
       allowInterop((event) => setState(() {
-            final eventString = jsonEncode(event);
+            final eventString = jsonEncode(toMap(event));
             print(eventString);
             info = "Sender disconnected...\n$eventString";
           })),
@@ -55,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
     widget.manager.addCustomMessageListener(
       'urn:x-cast:com.schwusch.chromecast-example',
       allowInterop((ev) {
-        final eventString = jsonEncode(ev.data);
+        final eventString = jsonEncode(toMap(ev));
         print(eventString);
         info = "Custom event:\n$eventString";
       }),
@@ -81,3 +82,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       );
 }
+
+Map toMap(dynamic obj) => jsonDecode(
+    context['JSON'].callMethod(
+        'stringify',
+        [context['map']]
+    )
+);
