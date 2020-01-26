@@ -28,37 +28,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    widget.manager.addEventListener(
-      EventType.READY,
-      allowInterop((event) => setState(() {
-            final eventString = jsonEncode(toMap(event));
-            print(eventString);
-            info = "Ready!\n$eventString";
-          })),
-    );
-    widget.manager.addEventListener(
-      EventType.SENDER_CONNECTED,
-      allowInterop((event) => setState(() {
-            final eventString = jsonEncode(toMap(event));
-            print(eventString);
-            info = "Sender connected!\n$eventString";
-          })),
-    );
-    widget.manager.addEventListener(
-      EventType.SENDER_DISCONNECTED,
-      allowInterop((event) => setState(() {
-            final eventString = jsonEncode(toMap(event));
-            print(eventString);
-            info = "Sender disconnected...\n$eventString";
-          })),
-    );
 
     widget.manager.addCustomMessageListener(
       'urn:x-cast:com.schwusch.chromecast-example',
       allowInterop((ev) {
-        final eventString = jsonEncode(toMap(ev));
-        print(eventString);
-        info = "Custom event:\n$eventString";
+        final String user = toMap(ev)['o']['data']['user'] as String;
+        print(user);
+        setState(() {
+          info = "Showig user:\n$user";
+        });
       }),
     );
 
@@ -83,9 +61,9 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 }
 
-Map toMap(dynamic obj) => jsonDecode(
+Map<String, dynamic> toMap(dynamic obj) => jsonDecode(
     context['JSON'].callMethod(
         'stringify',
-        [context['map']]
+        [obj]
     )
-);
+) as Map<String, dynamic>;

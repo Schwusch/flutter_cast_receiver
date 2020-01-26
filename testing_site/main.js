@@ -93,9 +93,7 @@ function stopApp() {
 function connect() {
   console.log("connect()");
   sendMessage({
-    type: "load",
-    url: $("#url").val(),
-    refresh: $("#refresh").val()
+    user: $("#url").val(),
   });
 }
 
